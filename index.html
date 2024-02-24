@@ -1,61 +1,102 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contador de 24 horas</title>
     <link rel="stylesheet" href="estilos.css">
 </head>
+
 <body>
 
-    <h1>Contador de 24 horas</h1>
-    <div id="contador">24:00:00</div>
+    <h1>LO QUE SIENTO POR TI</h1>
+    <div id="contador">00:00:00</div>
     <div id="mensaje"></div>
     <div id="imagen"></div>
 
+
     <script>
-        // Función para actualizar el contador
-function actualizarContador() {
-    var ahora = new Date();
-    var horaFinal = new Date(ahora);
-    horaFinal.setHours(21, 0, 0, 0); // 9 pm en hora colombiana
+        var imagenes = [
+            { mensaje: "YOKO", ruta: "img/imagen1.jpg" },
+            { mensaje: "YOKO", ruta: "img/imagen2.jpg" },
+            { mensaje: "SIN MIRAR LAS SEÑALES", ruta: "img/imagen3.jpg" },
+            { mensaje: "DIME TU", ruta: "img/imagen4.jpg" },
+            { mensaje: "AFUERA DEL PLANETA", ruta: "img/imagen5.jpg" },
+            { mensaje: "TIENES EL DON", ruta: "img/imagen5.jpg" },
+            { mensaje: "TENGO GANAS", ruta: "img/imagen5.jpg" },
+            { mensaje: "RESGUARDUM ETHER", ruta: "img/imagen5.jpg" },
+            { mensaje: "REINA PEPIADA", ruta: "img/imagen5.jpg" },
+            { mensaje: "ROMÁNTICOS DE LUNES", ruta: "img/imagen5.jpg" },
+            { mensaje: "TAN NATURAL", ruta: "img/imagen5.jpg" },
+            { mensaje: "ENFERMEDAD DE TI", ruta: "img/imagen5.jpg" },
+            { mensaje: "CUANDO ME ACERCO A TI", ruta: "img/imagen5.jpg" },
+            { mensaje: "DONDE NADIE PUEDA IR", ruta: "img/imagen5.jpg" },
+            { mensaje: "LUCY", ruta: "img/imagen5.jpg" },
+            { mensaje: "EL AMOR MÁS GRANDE DEL PLANETA", ruta: "img/imagen5.jpg" },
 
-    // Si ya pasó la hora final de hoy, establecer la hora final para el próximo día
-    if (ahora >= horaFinal) {
-        horaFinal.setDate(horaFinal.getDate() + 1);
-    }
+            // Agrega más imágenes con sus mensajes aquí
+        ];
 
-    var diferencia = horaFinal - ahora;
+        var indiceImagenActual = 0;
 
-    var horas = String(Math.floor(diferencia / (1000 * 60 * 60))).padStart(2, '0');
-    var minutos = String(Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
-    var segundos = String(Math.floor((diferencia % (1000 * 60)) / 1000)).padStart(2, '0');
-
-    document.getElementById('contador').innerText = horas + ':' + minutos + ':' + segundos;
-
-    // Actualizar cada segundo
-    setTimeout(actualizarContador, 1000);
-}
-
-        // Función para mostrar un mensaje y una imagen específica
         function mostrarMensajeEImagen() {
-            document.getElementById('mensaje').innerText = "¡Un fsdfsdhgwerhwrhweromienza!";
+            // Obtener el elemento mensaje
+            var mensajeElemento = document.getElementById('mensaje');
+
+            // Obtener el elemento imagen
+            var imagenElemento = document.getElementById('imagen');
+
+            // Mostrar el mensaje
+            mensajeElemento.innerText = imagenes[indiceImagenActual].mensaje;
 
             // Crear un elemento de imagen y establecer su atributo src
-            var imagen = document.createElement('img');
-            imagen.src = "img/imagen1.jpg";
+            var nuevaImagen = document.createElement('img');
+            nuevaImagen.src = imagenes[indiceImagenActual].ruta;
 
             // Añadir la imagen al elemento con id 'imagen'
-            document.getElementById('imagen').innerHTML = '';
-            document.getElementById('imagen').appendChild(imagen);
+            imagenElemento.innerHTML = '';
+            imagenElemento.appendChild(nuevaImagen);
+
+            // Incrementar el índice para la próxima imagen
+            indiceImagenActual = (indiceImagenActual + 1) % imagenes.length;
         }
 
-        // Iniciar el contador
-        actualizarContador();
+        function actualizarContador() {
+            mostrarMensajeEImagen(); // Mostrar la primera imagen de inmediato
 
-        // Mostrar mensaje e imagen después de 5 segundos (simulando un cambio diario)
-        setTimeout(mostrarMensajeEImagen, 5000);
+            function actualizar() {
+                var ahora = new Date();
+                var horaFinal = new Date(ahora);
+                // Establecer la hora a las 21:00:00 (9 pm)
+                horaFinal.setHours(21, 0, 0, 0);
+
+                var diferencia = horaFinal - ahora;
+
+                if (diferencia <= 0) {
+                    // Cuando el contador llega a cero, mostrar nuevo mensaje e imagen
+                    mostrarMensajeEImagen();
+
+                    // Reiniciar el contador para la próxima actualización
+                    horaFinal.setDate(horaFinal.getDate() + 1);
+                    horaFinal.setHours(21, 0, 0, 0);
+                }
+
+                var horas = String(Math.floor(diferencia / (1000 * 60 * 60))).padStart(2, '0');
+                var minutos = String(Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+                var segundos = String(Math.floor((diferencia % (1000 * 60)) / 1000)).padStart(2, '0');
+
+                document.getElementById('contador').innerText = horas + ':' + minutos + ':' + segundos;
+
+                setTimeout(actualizar, 1000);
+            }
+
+            actualizar();
+        }
+
+        actualizarContador();
     </script>
 
 </body>
+
 </html>
