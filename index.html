@@ -15,7 +15,6 @@
     <div id="mensaje"></div>
     <div id="imagen"></div>
 
-
     <script>
         var imagenes = [
             { mensaje: "YOKO", ruta: "img/imagen1.jpg" },
@@ -34,8 +33,7 @@
             { mensaje: "DONDE NADIE PUEDA IR", ruta: "img/imagen5.jpg" },
             { mensaje: "LUCY", ruta: "img/imagen5.jpg" },
             { mensaje: "EL AMOR MÁS GRANDE DEL PLANETA", ruta: "img/imagen5.jpg" },
-
-            // Agrega más imágenes con sus mensajes aquí
+            // ... (otras imágenes y mensajes)
         ];
 
         var indiceImagenActual = 0;
@@ -58,40 +56,45 @@
             imagenElemento.innerHTML = '';
             imagenElemento.appendChild(nuevaImagen);
 
-            // Incrementar el índice para la próxima imagen
+            // Incrementar el índice para la próxima imagen (sin reiniciar)
             indiceImagenActual = (indiceImagenActual + 1) % imagenes.length;
         }
 
         function actualizarContador() {
-            mostrarMensajeEImagen(); // Mostrar la primera imagen de inmediato
-
-            function actualizar() {
+            function calcularTiempoRestante() {
                 var ahora = new Date();
                 var horaFinal = new Date(ahora);
+
                 // Establecer la hora a las 21:00:00 (9 pm)
                 horaFinal.setHours(21, 0, 0, 0);
 
                 var diferencia = horaFinal - ahora;
 
-                if (diferencia <= 0) {
+                return diferencia;
+            }
+
+            function actualizar() {
+                var tiempoRestante = calcularTiempoRestante();
+
+                var horas = String(Math.floor(tiempoRestante / (1000 * 60 * 60))).padStart(2, '0');
+                var minutos = String(Math.floor((tiempoRestante % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+                var segundos = String(Math.floor((tiempoRestante % (1000 * 60)) / 1000)).padStart(2, '0');
+
+                document.getElementById('contador').innerText = horas + ':' + minutos + ':' + segundos;
+
+                if (tiempoRestante <= 0) {
                     // Cuando el contador llega a cero, mostrar nuevo mensaje e imagen
                     mostrarMensajeEImagen();
 
                     // Reiniciar el contador para la próxima actualización
-                    horaFinal.setDate(horaFinal.getDate() + 1);
-                    horaFinal.setHours(21, 0, 0, 0);
+                    setTimeout(actualizarContador, 24 * 60 * 60 * 1000); // 24 horas en milisegundos
+                } else {
+                    setTimeout(actualizar, 1000);
                 }
-
-                var horas = String(Math.floor(diferencia / (1000 * 60 * 60))).padStart(2, '0');
-                var minutos = String(Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
-                var segundos = String(Math.floor((diferencia % (1000 * 60)) / 1000)).padStart(2, '0');
-
-                document.getElementById('contador').innerText = horas + ':' + minutos + ':' + segundos;
-
-                setTimeout(actualizar, 1000);
             }
 
-            actualizar();
+            mostrarMensajeEImagen(); // Mostrar la primera imagen de inmediato
+            actualizar(); // Iniciar la primera actualización
         }
 
         actualizarContador();
