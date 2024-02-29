@@ -36,41 +36,30 @@
             // ... (otras imágenes y mensajes)
         ];
 
-        var indiceImagenActual = 1;
+        var indiceImagenActual = 2; // Inicia desde la imagen 3
 
         function mostrarMensajeEImagen() {
-            // Obtener el elemento mensaje
             var mensajeElemento = document.getElementById('mensaje');
-
-            // Obtener el elemento imagen
             var imagenElemento = document.getElementById('imagen');
-
-            // Mostrar el mensaje
             mensajeElemento.innerText = imagenes[indiceImagenActual].mensaje;
-
-            // Crear un elemento de imagen y establecer su atributo src
             var nuevaImagen = document.createElement('img');
             nuevaImagen.src = imagenes[indiceImagenActual].ruta;
-
-            // Añadir la imagen al elemento con id 'imagen'
             imagenElemento.innerHTML = '';
             imagenElemento.appendChild(nuevaImagen);
-
-            // Incrementar el índice para la próxima imagen (sin reiniciar)
-            indiceImagenActual = (indiceImagenActual + 1) % imagenes.length;
         }
 
         function actualizarContador() {
             function calcularTiempoRestante() {
                 var ahora = new Date();
                 var horaFinal = new Date(ahora);
-
-                // Establecer la hora a las 21:00:00 (9 pm)
                 horaFinal.setHours(21, 0, 0, 0);
 
-                var diferencia = horaFinal - ahora;
+                if (ahora >= horaFinal) {
+                    // Si ya es después de las 9 PM, calcular la hora de mañana
+                    horaFinal.setDate(horaFinal.getDate() + 1);
+                }
 
-                return diferencia;
+                return horaFinal - ahora;
             }
 
             function actualizar() {
@@ -87,7 +76,11 @@
                     mostrarMensajeEImagen();
 
                     // Reiniciar el contador para la próxima actualización
-                    setTimeout(actualizarContador, 24 * 60 * 60 * 1000); // 24 horas en milisegundos
+                    var mañana = new Date();
+                    mañana.setDate(mañana.getDate() + 1);
+                    mañana.setHours(21, 0, 0, 0);
+
+                    setTimeout(actualizarContador, mañana - new Date()); // Hora de mañana - hora actual
                 } else {
                     setTimeout(actualizar, 1000);
                 }
